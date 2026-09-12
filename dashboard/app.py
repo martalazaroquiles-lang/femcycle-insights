@@ -6,6 +6,9 @@ import plotly.express as px
 # Page configuration
 st.set_page_config(page_title="FemCycle Insights", layout="wide")
 
+# Custom color theme for FemTech branding
+px.defaults.color_discrete_sequence = ['#E63971', '#9C6ADE', '#4C6FFF', '#FF9F7D', '#5EC8C7']
+
 # Load data
 conn = sqlite3.connect('../femcycle.db')
 df = pd.read_sql("SELECT * FROM ciclos", conn)
@@ -14,6 +17,27 @@ conn.close()
 # Title
 st.title("🩸 FemCycle Insights")
 st.markdown("**A data-driven look at menstrual cycle patterns, symptoms, and lifestyle factors**")
+
+st.markdown("---")
+st.subheader("📋 Executive Summary")
+st.markdown(f"""
+This project analyzes **{df.shape[0]} menstrual cycles from {df['User ID'].nunique()} users** 
+to test whether lifestyle factors (stress, sleep, diet, exercise, age, BMI) predict symptom 
+occurrence — a common assumption in FemTech product design.
+
+**Key takeaways:**
+- 🔍 The traditional 21-35 day "clinical standard" cycle range excluded 56% of this population — 
+  a percentile-based approach was used instead to correctly identify true outliers (7.4%)
+- 📊 No individual lifestyle factor showed a statistically significant relationship with 
+  predominant symptom (all p > 0.05)
+- 🧩 Even combining factors via clustering (K-means) did not reveal a significant pattern, 
+  suggesting symptoms are more likely driven by hormonal cycle-phase dynamics than 
+  lifestyle alone
+
+**Product implication:** personalization strategies should prioritize cycle-phase tracking 
+over lifestyle-based segmentation for symptom-related features.
+""")
+st.markdown("---")
 
 # Show basic info
 st.write(f"Dataset: {df.shape[0]} cycles from {df['User ID'].nunique()} users")
